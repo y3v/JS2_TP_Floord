@@ -6,6 +6,15 @@
   font-style: normal;
 }
 
+a {
+  text-decoration: none;
+  text-align: center;
+}
+a:hover{
+  text-decoration: none;
+  color:white !important;
+}
+
 #floord-logo{
   width:100px;
   padding-bottom: 30px;

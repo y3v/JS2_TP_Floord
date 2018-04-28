@@ -1,0 +1,75 @@
+/*So that elements of a set WIDTH will have the right width even with padding*/
+*{
+	box-sizing:border-box;
+}
+/*If the browser doesnt know how to handle the recent element, it will behave as a block*/
+article, aside, details, figcaption, figure, footer, header, main, nav, section { display: block; }
+/*Sets the bodys margins to 0*/
+body{
+  margin: 5px;
+}
+
+.border {
+  border: 2px solid black;
+}
+.header{
+  height:200px;
+}
+.libcontainer {
+  width:19%;
+  height: 1000px;
+}
+.inlineb {
+  display: inline-block;
+}
+.topbar{
+  background-color: #7b69ec;
+  height:45px;
+}
+.lib{
+  background-color: #bbb6d7;
+  height: 940px;
+}
+.drawboard{
+  height: 1000px;
+}
+
+#drawboard {
+  box-sizing: content-box;
+}
+
+.collapsed {
+
+}
+
+.expanded {
+  display: inherit;
+  height: 45px;
+  width:45px;
+  background-color: #dedede;
+}
+/*clearfix hack!*/
+.row:after{
+  content:"";
+  clear:both;
+  display:block;
+}
+/* MEDIA QUERY FOR LARGE DESKTOP */
+@media only screen and (max-width:1200px){
+
+}
+
+/* MEDIA QUERY FOR LARGE TABLETS AND SMALL DESKTOP */
+@media only screen and (max-width:992px){
+
+}
+
+/* MEDIA QUERY FOR TABLETS */
+@media only screen and (max-width:768px){
+
+}
+
+/* MEDIA QUERY FOR MOBILE */
+@media only screen and (max-width:640px){
+
+}
