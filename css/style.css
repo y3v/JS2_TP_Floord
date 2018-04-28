@@ -5,12 +5,47 @@
   font-weight: normal;
   font-style: normal;
 }
-/* =======================================================
-*
-* 	Template Style 
-*	Edit this section
-*
-* ======================================================= */
+
+#floord-logo{
+  width:100px;
+  padding-bottom: 30px;
+}
+
+.navbar-brand{
+  padding:15px !important;
+}
+
+.quote{
+  background: #3c52f0 !important;
+}
+
+#image-isi{
+  margin-top: 100px;
+}
+
+#fh5co-about-us{
+  background:rgb(199, 217, 222);
+}
+
+#get-started{
+  padding: 7em 0;
+}
+
+#restaurant-list{
+  display:block;
+  margin:auto;
+  margin-top:-50px;
+  padding:15px;
+  border-radius: 10px;
+  border:5px solid #3c52f0;
+}
+
+#restaurant-list option{
+  display:inline-block;
+  padding:15px;
+  color: #3c52f0;
+}
+
 body {
   font-family: "Source Sans Pro", Arial, sans-serif;
   font-weight: 400;
@@ -299,7 +334,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #fh5co-testimonials {
-  background: #6173f4;
+  background: #3c52f0;
 }
 #fh5co-testimonials .section-heading h2 {
   color: white;
