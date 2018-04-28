@@ -14,8 +14,6 @@
 	    );
 	};
 
-
-
 	// Carousel Feature Slide
 	var owlCrouselFeatureSlide = function() {
 
@@ -460,7 +458,6 @@
 		testimonialsWayPoint();
 		pricingWayPoint();
 		pressWayPoint();
-
 	});
 
 

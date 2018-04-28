@@ -31,19 +31,58 @@
   padding: 7em 0;
 }
 
-#restaurant-list{
-  display:block;
+#restaurantsList{
+  position:relative;
+  width:360px;
   margin:auto;
-  margin-top:-50px;
-  padding:15px;
-  border-radius: 10px;
-  border:5px solid #3c52f0;
 }
 
-#restaurant-list option{
-  display:inline-block;
-  padding:15px;
-  color: #3c52f0;
+.restoBtn {
+    width:100%;
+    display:block;
+    background-color: #3c52f0;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border:none;
+    cursor: pointer;
+    margin:auto;
+    border-radius:10px;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    font-size: 25px;
+    text-transform: capitalize;
+}
+
+.restoBtn:hover, .restoBtn:focus {
+    background-color: #2980B9;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width:100%;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+}
+
+#restoDrop a:hover {
+  background-color: #ddd !important;
+}
+
+#build-buttons{
+  width:360px;
+  margin:auto;
 }
 
 body {

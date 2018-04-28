@@ -152,24 +152,29 @@
 			<div class="row row-bottom-padded-lg" id="about-us">
 				<div class="col-md-12 section-heading text-center">
 					<h2 class="to-animate">Get Started with Floord</h2>
-									<div class="row">
-										<div class="col-md-8 col-md-offset-2 to-animate">
-											<h3>Create a new blueprint or upload an existing version!</h3>
-										</div>
-									</div>
-								</div>
-								<div>
-									<select id="restaurant-list">
-									  <option>---Select Existing Restaurants---</option>
-										<option>---Select Existing Restaurants---</option>
-										<option>---Select Existing Restaurants---</option>
-										<option>---Select Existing Restaurants---</option>
-									</select>
-								</div>
-								<h3>TODO: ADD a button that allows you to go to blueprint builder</h3>
+						<div class="row">
+							<div class="col-md-8 col-md-offset-2 to-animate">
+								<h3>Create a new blueprint or upload an existing version!</h3>
 							</div>
 						</div>
 					</div>
+					<div>
+						<div id="restaurantsList">
+						  <button id="dropdownClick" class="restoBtn">Select Existing Restaurant &nbsp;&nbsp; <span id="dropdownClickArrow"><i class="icon-arrow-down"></i></span></button>
+						  <div id="restoDrop" class="dropdown-content">
+						    <a href="#">Food Bar Baz</a>
+						    <a href="#">Link 2</a>
+						    <a href="#">test</a>
+						  </div>
+						</div>
+					</div>
+					<h3 style="text-align:center;padding:30px 0;" class="subtext">OR</h3>
+					<div id="build-buttons">
+							<button class="restoBtn" id="createNew">Create New Blueprint</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 					<div id="fh5co-features" data-section="features">
 						<div class="container">
@@ -465,5 +470,33 @@
 					<script src="js/main.js"></script>
 
 </body>
+
+<script>
+	$('#dropdownClick').on("click", e=>{
+		document.getElementById("restoDrop").classList.toggle("show");
+		console.log("ARROW")
+	})
+
+	$('#dropdownClickArrow').on("click", e=>{
+		document.getElementById("restoDrop").classList.toggle("show");
+		console.log("ARROW2")
+	})
+
+
+	window.onclick = function(event) {
+  if (!event.target.matches('.restoBtn')) {
+
+	    var dropdowns = document.getElementsByClassName("dropdown-content");
+	    var i;
+	    for (i = 0; i < dropdowns.length; i++) {
+	      var openDropdown = dropdowns[i];
+	      if (openDropdown.classList.contains('show')) {
+	        openDropdown.classList.remove('show');
+	      }
+	    }
+	  }
+	}
+
+</script>
 
 </html>
