@@ -82,6 +82,9 @@ function dragEnd(ev) {
       if (this.desc === "wall"){
         this.dblclick(configModal)
       }
+      if (this.desc === "table"){
+        this.dblclick(configTable);
+      }
       this.dblclickSet = true;
     }
   }
@@ -109,19 +112,25 @@ function configModal(item){
   let content = $('<div>').addClass('modal-content');
 
   // destroys the modal. need to persist data somewhere
-  modal.click(() => {
+  /*modal.click(() => {
     modal.remove();
   })
+
+}*/
+
 
   content.append(configItem('width', 'number'));
   content.append(configItem('height', 'number'));
   content.append(configItem('position', 'text'));
   content.append(configItem('x', 'number'));
   content.append(configItem('y', 'number'));
-  content.append(configButton())
+  content.append(configButton(modal))
 
   modal.append(content);
   $('body').append(modal);
+
+  removeIfClickedOutside(modal)
+
 }
 
 function configItem(label, type) {
@@ -134,9 +143,15 @@ function configItem(label, type) {
   return option;
 }
 
-function configButton() {
+function configTable(){
+  let modal = $('<div>').addClass('modal');
+  let content = $('<div>').addClass('modal-content');
+}
+
+function configButton(modal) {
   let closeBtn = $('<button>').addClass("modalButton").text("Close")
 
+  closeBtn.on("click", e=> modal.remove())
   return closeBtn;
 }
 
@@ -164,4 +179,14 @@ function collapseRight(ev) {
 
 function capitalize(str) {
     return str[0].toUpperCase() + str.slice(1);
+}
+
+function removeIfClickedOutside(modal){
+  //if you click anywhere outside of the dialog box (modal), it will close
+  window.onclick = function(event) {
+    // Note: modal is a Jquery object, to compare you must take the JS object using get(0)
+    if (event.target == modal.get(0)) {
+        modal.remove();
+    }
+  }
 }
