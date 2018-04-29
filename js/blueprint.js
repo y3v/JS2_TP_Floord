@@ -78,12 +78,12 @@ function dragEnd(ev) {
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
     console.log(this.desc);
-
-    draggedObj.dblclick(obj=>{
-      if (draggedObj.desc === "table"){
-          console.log("It's a table")
+    if (!this.dblclickSet){
+      if (this.desc === "wall"){
+        this.dblclick(configModal)
       }
-    })
+      this.dblclickSet = true;
+    }
   }
   else{
     console.log("REMOVING")
@@ -118,6 +118,7 @@ function configModal(item){
   content.append(configItem('position', 'text'));
   content.append(configItem('x', 'number'));
   content.append(configItem('y', 'number'));
+  content.append(configButton())
 
   modal.append(content);
   $('body').append(modal);
@@ -131,6 +132,12 @@ function configItem(label, type) {
         .addClass('itemConfig');
 
   return option;
+}
+
+function configButton() {
+  let closeBtn = $('<button>').addClass("modalButton").text("Close")
+
+  return closeBtn;
 }
 
 function getBBox() {
