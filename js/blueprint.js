@@ -111,20 +111,13 @@ function configModal(item){
   let modal = $('<div>').addClass('modal');
   let content = $('<div>').addClass('modal-content');
 
-  // destroys the modal. need to persist data somewhere
-  /*modal.click(() => {
-    modal.remove();
-  })
-
-}*/
-
-
   content.append(configItem('width', 'number'));
   content.append(configItem('height', 'number'));
   content.append(configItem('position', 'text'));
   content.append(configItem('x', 'number'));
   content.append(configItem('y', 'number'));
-  content.append(configButton(modal))
+  content.append(configButton(modal, "save"))
+  content.append(configButton(modal, "close"))
 
   modal.append(content);
   $('body').append(modal);
@@ -146,13 +139,30 @@ function configItem(label, type) {
 function configTable(){
   let modal = $('<div>').addClass('modal');
   let content = $('<div>').addClass('modal-content');
+
+  content.append(configItem('Table seats how many?', 'number'));
+  content.append(configButton(modal, "save"))
+  content.append(configButton(modal, "close"))
+
+  modal.append(content);
+  $('body').append(modal);
+
+  removeIfClickedOutside(modal)
 }
 
-function configButton(modal) {
-  let closeBtn = $('<button>').addClass("modalButton").text("Close")
+function configButton(modal, type) {
+  let button;
+  if (type=="close"){
+    button = $('<button>').addClass("modalButton").text(capitalize(type))
+    button.on("click", e=> modal.remove())
+  }
 
-  closeBtn.on("click", e=> modal.remove())
-  return closeBtn;
+  if (type == "save"){
+    button = $('<button>').addClass("modalButton").text(capitalize(type))
+    button.on("click", e=> console.log("TODO: SAVE"))
+  }
+
+  return button;
 }
 
 function getBBox() {
