@@ -24,34 +24,20 @@ document.addEventListener('DOMContentLoaded', function(){
   // add all the elements to the menu
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
-<<<<<<< HEAD
-    let itemFrame = g.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
     let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
-    let icon = s.image(`../images/${items[i]}.png`, 50,50,50,50)
-=======
-    let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
-    let icon = g.image(`../images/${items[i]}.png`, MXY.x, MXY.y + 10, itemH, itemH)
->>>>>>> 42fa753f4506adb4222c9c9d65359fa536e44dd3
+    let icon = g.image(`../images/${items[i]}.svg`, MXY.x, MXY.y + 10, itemH, itemH)
 
 /*    let itemFrame = s.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
     itemFrame.attr({
       x: ix,
       fill:'#363ba0'
     })
-<<<<<<< HEAD
-
-    //g.add(itemFrame);
-    g.add(icon)
-    console.log(icon.attr());
-=======
     g.add(itemFrame);
     */
-    console.log(icon.attr({
+    icon.attr({
       x: ix,
       padding: 20
-    }
-    ));
->>>>>>> 42fa753f4506adb4222c9c9d65359fa536e44dd3
+    })
 
     // load the icons
 /*    Snap.load(`./images/${items[i]}.svg`, frag => {
@@ -66,26 +52,32 @@ document.addEventListener('DOMContentLoaded', function(){
         width:200
       });
     })*/
+
+    icon.drag(dragMove,dragStart,dragEnd)
   }
 });
 
 
 
 function dragStart(x, y, ev) {
+  console.log("DragStart");
+  let newElement = this.clone()
   this.attr({
     fill:'blue'
   })
 }
 
 function dragMove(dx, dy, x, y, ev) {
+  console.log("DragMove");
   this.attr({
     fill:'orange',
-    cx: x -5,
-    cy: y -205
+    x: x-100,
+    y: y-200
   })
 }
 
 function dragEnd() {
+  console.log("DragEnd");
   this.attr({
     fill:'black'
   })
