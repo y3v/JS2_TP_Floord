@@ -34,28 +34,64 @@ document.addEventListener('DOMContentLoaded', function(){
     // Add drag(dragMove, dragStart, dragEnd) event
     icon.drag(dragMove, dragStart, dragEnd)
     icon.desc = items[i];
+    icon.clonable = true;
   }
 });
 
 function dragStart(x, y, ev) {
   // duplicates the icon
-  draggedObj = this.clone();
+  if (this.clonable){
+    draggedObj = this.clone();
+    draggedObj.desc = this.desc;
+    draggedObj.drag(dragMove, dragStart, dragEnd)
+    draggedObj.clonable = false;
+  }
+  else{
+    console.log("NOT CLONED")
+    this.lastX = this.attr().x;
+    this.lastY = this.attr().y;
+  }
 }
 
 function dragMove(dx, dy, x, y, ev) {
   // just so the mouse ptr is in the middle of the icon
-  draggedObj.attr({
-    x: x - (5 + this.attr().height/2), // where 5 is the body margin
-    y: y - (200 + this.attr().width/2) // where 200 is header height (rethink)
-  });
+  if (this.clonable){
+    console.log("MOVING AFTER CLONING")
+    draggedObj.attr({
+      x: x - (5 + this.attr().width/2), // where 5 is the body margin
+      y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+    });
+  }
+  else{
+    console.log("JUST MOVING")
+    this.attr({
+      x: x - (5 + this.attr().width/2), // where 5 is the body margin
+      y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+    });
+    console.log(`X: ${this.attr().x} and y: ${this.attr().y}`)
+  }
 }
 function dragEnd(ev) {
   // removes the icon from the screen
-  draggedObj.remove();
+  //draggedObj.remove();
 
   // if the mouse ptr is in the drawboard region on release, add an item
-  if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 150)){
-    console.log(configModal(this.desc))
+  if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280)){
+    console.log(this.desc);
+  }
+  else{
+    console.log("REMOVING")
+
+    //if you move an existing object out of bound, bring back to last recorded coordinates
+    if (!this.clonable){
+      this.attr({
+        x: this.lastX,
+        y: this.lastY
+      });
+    }
+    else{
+      draggedObj.remove();
+    }
   }
 
 
@@ -115,4 +151,3 @@ function collapseRight(ev) {
 
 function capitalize(str) {
     return str[0].toUpperCase() + str.slice(1);
-}
