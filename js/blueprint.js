@@ -78,12 +78,22 @@ function dragEnd(ev) {
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
     console.log(this.desc);
-    if (this.desc === "wall"){
-      if (!this.dblclickSet){
-        this.dblclick(configModal)
+
+    switch (this.desc) {
+
+      case 'wall':
+        let data = {};
+        if (!this.dblclickSet)
+          this.dblclick(configModal);
         this.dblclickSet = true;
-      }
-      configModal(this)
+        configModal(data)
+        break;
+
+      case 'table':
+        if (!this.dblclickSet)
+          this.dblclick(configTable)
+        this.dblclickSet = true;
+        break;
     }
   }
   else{
@@ -116,13 +126,16 @@ function configModal(item){
 */
   content.append(configItem('width', 'number'));
   content.append(configItem('height', 'number'));
+  content.append(configItem('position', 'radio'));
   content.append(configItem('x', 'number'));
   content.append(configItem('y', 'number'));
-  content.append(configItem('position', 'radio'));
-  content.append(configButton())
+  content.append(configButton(modal))
 
   modal.append(content);
   $('body').append(modal);
+
+  removeIfClickedOutside(modal)
+
 }
 
 function configItem(label, type) {
@@ -153,9 +166,15 @@ function configItem(label, type) {
   return option;
 }
 
-function configButton() {
+function configTable(){
+  let modal = $('<div>').addClass('modal');
+  let content = $('<div>').addClass('modal-content');
+}
+
+function configButton(modal) {
   let closeBtn = $('<button>').addClass("modalButton restoBtn").text("Close")
 
+  closeBtn.on("click", e=> modal.remove())
   return closeBtn;
 }
 
@@ -183,4 +202,14 @@ function collapseRight(ev) {
 
 function capitalize(str) {
     return str[0].toUpperCase() + str.slice(1);
+}
+
+function removeIfClickedOutside(modal){
+  //if you click anywhere outside of the dialog box (modal), it will close
+  window.onclick = function(event) {
+    // Note: modal is a Jquery object, to compare you must take the JS object using get(0)
+    if (event.target == modal.get(0)) {
+        modal.remove();
+    }
+  }
 }
