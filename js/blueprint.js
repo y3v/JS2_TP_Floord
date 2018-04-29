@@ -12,9 +12,9 @@ let MXY = {}
 document.addEventListener('DOMContentLoaded', function(){
   let menu = s.rect(0, (sur.outerHeight() - 150), sur.outerWidth(), 150)
   menu.attr({
-    fill: 'lightGrey'/*,
-    stroke: 'black',
-    strokeWidth: 4*/
+    fill: BLUEPRINT_BGD,
+    stroke: 'lightgrey',
+    strokeWidth: 4
   })
   MXY = menu.getBBox();
   console.log(MXY);
@@ -24,18 +24,34 @@ document.addEventListener('DOMContentLoaded', function(){
   // add all the elements to the menu
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
+<<<<<<< HEAD
     let itemFrame = g.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
     let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
     let icon = s.image(`../images/${items[i]}.png`, 50,50,50,50)
+=======
+    let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
+    let icon = g.image(`../images/${items[i]}.png`, MXY.x, MXY.y + 10, itemH, itemH)
+>>>>>>> 42fa753f4506adb4222c9c9d65359fa536e44dd3
 
+/*    let itemFrame = s.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
     itemFrame.attr({
       x: ix,
       fill:'#363ba0'
     })
+<<<<<<< HEAD
 
     //g.add(itemFrame);
     g.add(icon)
     console.log(icon.attr());
+=======
+    g.add(itemFrame);
+    */
+    console.log(icon.attr({
+      x: ix,
+      padding: 20
+    }
+    ));
+>>>>>>> 42fa753f4506adb4222c9c9d65359fa536e44dd3
 
     // load the icons
 /*    Snap.load(`./images/${items[i]}.svg`, frag => {
