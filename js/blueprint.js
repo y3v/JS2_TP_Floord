@@ -78,6 +78,12 @@ function dragEnd(ev) {
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
     console.log(this.desc);
+
+    draggedObj.dblclick(obj=>{
+      if (draggedObj.desc === "table"){
+          console.log("It's a table")
+      }
+    })
   }
   else{
     console.log("REMOVING")
