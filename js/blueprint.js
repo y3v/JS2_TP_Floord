@@ -90,8 +90,9 @@ function dragEnd(ev) {
         break;
 
       case 'table':
-        if (!this.dblclickSet)
-          this.dblclick(configTable)
+        if (!this.dblclickSet){
+          this.dblclick(a=>configTable(this))
+        }
         this.dblclickSet = true;
         break;
     }
@@ -140,7 +141,7 @@ function configItem(label, type) {
 
   if (type !== 'radio'){
     option.append($('<input>').attr('type', type).attr('id', `item${uLabel}`))
-    .prepend($('<label>').attr('for', `item ${uLabel}`).text(uLabel))
+    .prepend($('<label>').attr('for', `item${uLabel}`).text(uLabel))
     .addClass('itemConfig');
   }
   else{
@@ -162,13 +163,15 @@ function configItem(label, type) {
   return option;
 }
 
-function configTable(){
+function configTable(item, item2){
+
+  console.log(item)
   let modal = $('<div>').addClass('modal');
   let content = $('<div>').addClass('modal-content');
 
-  content.append(configItem('Table seats how many?', 'number'));
-  content.append(configButton(modal, "save"))
-  content.append(configButton(modal, "close"))
+  content.append(configItem('seats', 'number'));
+  content.append(configButton(modal, "save", item))
+  content.append(configButton(modal, "close", null))
 
   modal.append(content);
   $('body').append(modal);
@@ -176,7 +179,7 @@ function configTable(){
   removeIfClickedOutside(modal)
 }
 
-function configButton(modal, type) {
+function configButton(modal, type, data) {
   let button;
   if (type=="close"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
@@ -185,10 +188,18 @@ function configButton(modal, type) {
 
   if (type == "save"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
-    button.on("click", e=> console.log("TODO: SAVE"))
+    button.on("click", e=>{
+      data.seats = $('#itemSeats').val()
+      let table = createTableGraphic(data)
+    })
   }
 
   return button;
+}
+
+function createTableGraphic(table){
+  console.log(table.node.parentElement)
+  //table.node.parentElement.rect((table.attr().x), table.attr().y, 50, 50)
 }
 
 function getBBox() {
