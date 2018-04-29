@@ -78,11 +78,12 @@ function dragEnd(ev) {
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
     console.log(this.desc);
-    if (!this.dblclickSet){
-      if (this.desc === "wall"){
+    if (this.desc === "wall"){
+      if (!this.dblclickSet){
         this.dblclick(configModal)
+        this.dblclickSet = true;
       }
-      this.dblclickSet = true;
+      configModal(this)
     }
   }
   else{
@@ -109,15 +110,15 @@ function configModal(item){
   let content = $('<div>').addClass('modal-content');
 
   // destroys the modal. need to persist data somewhere
-  modal.click(() => {
+/*  modal.click(() => {
     modal.remove();
   })
-
+*/
   content.append(configItem('width', 'number'));
   content.append(configItem('height', 'number'));
-  content.append(configItem('position', 'text'));
   content.append(configItem('x', 'number'));
   content.append(configItem('y', 'number'));
+  content.append(configItem('position', 'radio'));
   content.append(configButton())
 
   modal.append(content);
@@ -127,15 +128,33 @@ function configModal(item){
 function configItem(label, type) {
   let uLabel = capitalize(label);
   let option = $('<div>').attr('id', label);
-  option.append($('<input>').attr('type', type).attr('id', `item ${uLabel}`))
-        .prepend($('<label>').attr('for', `item ${uLabel}`).text(uLabel))
-        .addClass('itemConfig');
+
+  if (type !== 'radio'){
+    option.append($('<input>').attr('type', type).attr('id', `item${uLabel}`))
+    .prepend($('<label>').attr('for', `item ${uLabel}`).text(uLabel))
+    .addClass('itemConfig');
+  }
+  else{
+    option.append($('<label>').text('Alignment')).addClass('itemConfig')
+          .append($('<label>').attr('for', `hAlign`).text('Horizontal').addClass('alignLabel'))
+          .append($('<input>').attr('type', 'radio')
+                              .attr('id', `hAlign`)
+                              .attr('name', 'alignment')
+                              .attr('value', 'horizontal')
+                              .addClass('modalRadio'))
+          .append($('<label>').attr('for', `vAlign`).text('Vertical').addClass('alignLabel'))
+          .append($('<input>').attr('type', 'radio')
+                              .attr('id', `vAlign`)
+                              .attr('name', 'alignment')
+                              .attr('value', 'vertical')
+                              .addClass('modalRadio'))
+  }
 
   return option;
 }
 
 function configButton() {
-  let closeBtn = $('<button>').addClass("modalButton").text("Close")
+  let closeBtn = $('<button>').addClass("modalButton restoBtn").text("Close")
 
   return closeBtn;
 }

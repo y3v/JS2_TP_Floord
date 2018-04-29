@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url("../fonts/icomoon/icomoon.eot?srf3rx");
+  src: url("../fonts/icomoon/icomoon.eot?srf3rx#iefix") format("embedded-opentype"), url("../fonts/icomoon/icomoon.ttf?srf3rx") format("truetype"), url("../fonts/icomoon/icomoon.woff?srf3rx") format("woff"), url("../fonts/icomoon/icomoon.svg?srf3rx#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
 /*So that elements of a set WIDTH will have the right width even with padding*/
 *{
 	box-sizing:border-box;
@@ -37,11 +44,28 @@ body{
 }
 
 .itemConfig { margin:auto;}
-.itemConfig input, label {
+.itemConfig label {
 	display: inline-block;
-	width: 50%;
+	width: 30%;
+	padding: 5px;
+	font-family: "Source Sans Pro", Arial, sans-serif;
 }
 
+.itemConfig input {
+	display: inline-block;
+	width: 70%;
+	padding: 5px;
+	font-family: "Source Sans Pro", Arial, sans-serif;
+}
+
+label.alignLabel {
+	display: inline;
+	padding: 0;
+}
+input.modalRadio {
+	width: 20px;
+	margin-right: 15px;
+}
 .border {
   border: 2px solid black;
 }
