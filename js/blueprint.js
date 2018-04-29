@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function(){
   let itemW = (MXY.w / items.length) - 10
   let itemH = MXY.h - 20
 
+  let bbox = s.getBBox();
+  console.log(bbox);
   // add all the elements to the menu
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
@@ -53,14 +55,41 @@ function dragEnd(ev) {
 
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 150)){
-    console.log(this.desc);
-
+    console.log(configModal(this.desc))
   }
 
 
 }
 
 
+function configModal(item){
+  let modal = $('<div>').addClass('modal');
+  let content = $('<div>').addClass('modal-content');
+
+  // destroys the modal. need to persist data somewhere
+  modal.click(() => {
+    modal.remove();
+  })
+
+  content.append(configItem('width', 'number'));
+  content.append(configItem('height', 'number'));
+  content.append(configItem('position', 'text'));
+  content.append(configItem('x', 'number'));
+  content.append(configItem('y', 'number'));
+
+  modal.append(content);
+  $('body').append(modal);
+}
+
+function configItem(label, type) {
+  let uLabel = capitalize(label);
+  let option = $('<div>').attr('id', label);
+  option.append($('<input>').attr('type', type).attr('id', `item ${uLabel}`))
+        .prepend($('<label>').attr('for', `item ${uLabel}`).text(uLabel))
+        .addClass('itemConfig');
+
+  return option;
+}
 
 function getBBox() {
   console.log(s);
@@ -84,7 +113,6 @@ function collapseRight(ev) {
   }
 }
 
-function configModal(item){
-  
-
+function capitalize(str) {
+    return str[0].toUpperCase() + str.slice(1);
 }
