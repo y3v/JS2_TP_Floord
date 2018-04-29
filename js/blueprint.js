@@ -10,6 +10,8 @@ let colored = false;
 let MXY = {}
 let drawboard_coords = {}
 let draggedObj = {}
+let dragGroup = {}
+let currentDragged
 
 document.addEventListener('DOMContentLoaded', function(){
   let menu = s.rect(0, (sur.outerHeight() - 150), sur.outerWidth(), 150)
@@ -39,9 +41,11 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 function dragStart(x, y, ev) {
-
+  currentDragged = draggedObj.desc;
   // creates new icon / element
   if (this.clonable){
+
+    dragGroup = s.g()
 
     switch (this.desc) {
       case 'wall':
@@ -61,15 +65,24 @@ function dragStart(x, y, ev) {
       default:
         draggedObj = this.clone();
         draggedObj.desc = this.desc;
+        dragGroup.add(draggedObj);
         break;
     }
 
-    draggedObj.drag(dragMove, dragStart, dragEnd)
+    dragGroup.drag(dragMove, dragStart, dragEnd)
+    dragGroup.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
     draggedObj.clonable = false;
   }
 
   else {
     console.log("NOT CLONED")
+
+    console.log(currentDragged)
+    console.log(draggedObj.desc)
+    if (currentDragged != draggedObj.desc){
+      console.log("DRAG DATA RESET")
+      dragGroup.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
+    }
 
     switch (this.desc) {
       case 'wall':
@@ -89,7 +102,6 @@ function dragStart(x, y, ev) {
 }
 
 function dragMove(dx, dy, x, y, ev) {
-  // just so the mouse ptr is in the middle of the icon
   if (this.clonable){
 
     switch (this.desc) {
@@ -127,10 +139,14 @@ function dragMove(dx, dy, x, y, ev) {
         break;
 
       default:
+
+        //console.log(dragData)
         this.attr({
-          x: x - (5 + this.attr().width/2), // where 5 is the body margin
-          y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+            transform: `t${dx + dragGroup.dragData.ox},${dy + dragGroup.dragData.oy}`
         });
+        dragGroup.dragData.x = dx;
+        dragGroup.dragData.y = dy;
+        //console.log(`${dx},${dy}`)
         break;
     }
   }
@@ -139,6 +155,10 @@ function dragMove(dx, dy, x, y, ev) {
 function dragEnd(ev) {
   // removes the icon from the screen
   //draggedObj.remove();
+
+  dragGroup.dragData.ox += dragGroup.dragData.x
+  dragGroup.dragData.oy += dragGroup.dragData.y
+  //console.log(`${dragData.ox},${dragData.oy}`)
 
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
@@ -154,7 +174,7 @@ function dragEnd(ev) {
 
       case 'table':
         if (!this.dblclickSet){
-          this.dblclick(a=>configTable(this))
+          dragGroup.dblclick(a=>configTable(this, dragGroup))
         }
         this.dblclickSet = true;
         break;
@@ -240,15 +260,13 @@ function configItem(label, type) {
   return option;
 }
 
-function configTable(item, item2){
-
-  console.log(item)
+function configTable(item, group){
   let modal = $('<div>').addClass('modal');
   let content = $('<div>').addClass('modal-content');
 
   content.append(configItem('seats', 'number'));
-  content.append(configButton(modal, "save", item))
-  content.append(configButton(modal, "close", null))
+  content.append(configButton(modal, "save", item, group))
+  content.append(configButton(modal, "close", null, null))
 
   modal.append(content);
   $('body').append(modal);
@@ -256,7 +274,7 @@ function configTable(item, item2){
   removeIfClickedOutside(modal)
 }
 
-function configButton(modal, type, data) {
+function configButton(modal, type, item, group) {
   let button;
   if (type=="close"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
@@ -266,17 +284,28 @@ function configButton(modal, type, data) {
   if (type == "save"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=>{
-      data.seats = $('#itemSeats').val()
-      let table = createTableGraphic(data)
+      item.seats = $('#itemSeats').val()
+      let table = createTableGraphic(item, group)
     })
   }
-
   return button;
 }
 
-function createTableGraphic(table){
-  console.log(table.node.parentElement)
-  //table.node.parentElement.rect((table.attr().x), table.attr().y, 50, 50)
+function createTableGraphic(table, group){
+  console.log(table)
+  let seats = table.seats;
+  if (seats%2 !== 0){
+    seats++; //want an even number
+  }
+  let newTable = s.rect(table.attr().x,table.attr().y,100, (seats/2) * 100)
+  group.drag(dragMove, dragStart, dragEnd)
+  newTable.clonable = table.clonable;
+  newTable.desc = table.desc;
+  newTable.events = table.events
+  console.log(table.events[1]);
+  console.log(newTable.attr().x)
+  group.add(newTable);
+  table.remove()
 }
 
 function getBBox() {
