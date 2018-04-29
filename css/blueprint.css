@@ -5,6 +5,10 @@
 /*If the browser doesnt know how to handle the recent element, it will behave as a block*/
 article, aside, details, figcaption, figure, footer, header, main, nav, section { display: block; }
 /*Sets the bodys margins to 0*/
+svg {
+	background-color: #363ba0;
+}
+
 body{
   margin: 5px;
 }
@@ -27,7 +31,7 @@ body{
   height:45px;
 }
 .lib{
-  background-color: #bbb6d7;
+  background-color: white;
   height: 940px;
 }
 .drawboard{

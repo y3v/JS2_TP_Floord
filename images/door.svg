@@ -1,0 +1,43 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="402" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <rect stroke="#ffffff" id="svg_3" height="392.999994" width="259" y="4" x="70.5" stroke-width="8" fill="none"/>
+  <text style="cursor: move;" stroke="#ffffff" transform="matrix(3.107692241668701,0,0,3.107692241668701,-243.43845391273499,-721.8845927715302) " font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15" id="svg_101" y="348.064356" x="124.696172" stroke-width="0" fill="#ffffff">Door</text>
+  <g stroke="null" id="svg_158">
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_137">
+    <g stroke="null" id="svg_138">
+     <path fill="#ffffff" stroke="null" id="svg_139" d="m2909.791534,2409.122345l-180,0c-8.284,0 -15,6.716 -15,15l0,180c0,8.284 6.716,15 15,15l180,0c8.284,0 15,-6.716 15,-15l0,-180c0,-8.284 -6.716,-15 -15,-15zm-105,180l-60,0l0,-60l60,0l0,60zm0,-90l-60,0l0,-60l60,0l0,60zm90,90l-60,0l0,-60l60,0l0,60zm0,-90l-60,0l0,-60l60,0l0,60z"/>
+    </g>
+   </g>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_140">
+    <g stroke="null" id="svg_141">
+     <path fill="#ffffff" stroke="null" id="svg_142" d="m2999.791534,2831.122345l-15,0l0,-467c0,-8.284 -6.716,-15 -15,-15l-300,0c-8.284,0 -15,6.716 -15,15l0,467l-15,0c-8.284,0 -15,6.716 -15,15s6.716,15 15,15c14.513,0 334.889,0 360,0c8.284,0 15,-6.716 15,-15s-6.716,-15 -15,-15zm-45,-182l-45,0c-8.284,0 -15,6.716 -15,15s6.716,15 15,15l45,0l0,152l-270,0l0,-452l270,0l0,270z"/>
+    </g>
+   </g>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_143"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_144"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_145"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_146"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_147"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_148"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_149"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_150"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_151"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_152"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_153"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_154"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_155"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_156"/>
+   <g stroke="null" transform="matrix(0.40884253000071585,0,0,0.40884253000071585,-952.850766976059,-900.7821703064379) " id="svg_157"/>
+  </g>
+ </g>
+</svg>

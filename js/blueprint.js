@@ -1,15 +1,16 @@
 'use strict';
+const BLUEPRINT_BGD = '#363ba0'
 
 let s = Snap('#svg0');
 let sur = $('#svg0')
 let drb = $('#drawboard')
 let shapes = []
-let items = ['Table', 'Counter', 'Front desk', 'Door', 'Bathroom', 'Kitchen', 'Bar', 'Wall']
+let items = ['wall', 'door', 'restroom', 'kitchen', 'table', 'bar']
 let colored = false;
 let MXY = {}
 
 document.addEventListener('DOMContentLoaded', function(){
-  let menu = s.rect(0, (sur.outerHeight() - 150), sur.width(), 150)
+  let menu = s.rect(0, (sur.outerHeight() - 150), sur.outerWidth(), 150)
   menu.attr({
     fill: 'lightGrey'/*,
     stroke: 'black',
@@ -20,29 +21,36 @@ document.addEventListener('DOMContentLoaded', function(){
   let itemW = (MXY.w / items.length) - 10
   let itemH = MXY.h - 20
 
+  // add all the elements to the menu
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
-    let ifr = s.rect(MXY.x, MXY.y + 10, itemW, itemH);
+    let itemFrame = s.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
     let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
+    let icon = s.image(`../images/${items[i]}.png`, 20,20,20,20)
 
-
-    ifr.attr({
-      x: ix
+    itemFrame.attr({
+      x: ix,
+      fill:'#363ba0'
     })
-    g.add(ifr);
-    Snap.load('./images/18plus.svg', frag => {
+
+    g.add(itemFrame);
+    g.add(icon)
+    console.log(icon.attr());
+
+    // load the icons
+/*    Snap.load(`./images/${items[i]}.svg`, frag => {
       console.log(g);
+      console.log(frag);
       g.add(frag)
       let lskd = g.select('svg')
+      let asd = Snap.parse(lskd)
+      console.log(asd);
       lskd.attr({
-        height:10,
-        width:10
-      })
-      console.log();
-    })
+        height:200,
+        width:200
+      });
+    })*/
   }
-  s.text(MXY.x, MXY.y, 'heyyy')
-
 });
 
 
