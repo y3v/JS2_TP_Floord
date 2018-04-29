@@ -27,94 +27,72 @@ document.addEventListener('DOMContentLoaded', function(){
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
     let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
-<<<<<<< HEAD
-    let icon = g.image(`../images/${items[i]}.svg`, MXY.x, MXY.y + 10, itemH, itemH)
-
-/*    let itemFrame = s.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
-    itemFrame.attr({
-      x: ix,
-      fill:'#363ba0'
-    })
-    g.add(itemFrame);
-    */
-    icon.attr({
-      x: ix,
-      padding: 20
-    })
-
-    // load the icons
-/*    Snap.load(`./images/${items[i]}.svg`, frag => {
-      console.log(g);
-      console.log(frag);
-      g.add(frag)
-      let lskd = g.select('svg')
-      let asd = Snap.parse(lskd)
-      console.log(asd);
-      lskd.attr({
-        height:200,
-        width:200
-      });
-    })*/
-
-    icon.drag(dragMove,dragStart,dragEnd)
-=======
     let icon = g.image(`../images/${items[i]}.png`, ix, MXY.y + 10, itemH, itemH)
 
     // Add drag(dragMove, dragStart, dragEnd) event
     icon.drag(dragMove, dragStart, dragEnd)
     icon.desc = items[i];
->>>>>>> 38113fe3b7c2a1d496f6cbc8fb5aa38b85d759cb
+    icon.clonable = true;
   }
 });
 
 function dragStart(x, y, ev) {
-<<<<<<< HEAD
-  console.log("DragStart");
-  let newElement = this.clone()
-  this.attr({
-    fill:'blue'
-  })
-}
-
-function dragMove(dx, dy, x, y, ev) {
-  console.log("DragMove");
-  this.attr({
-    fill:'orange',
-    x: x-100,
-    y: y-200
-  })
-=======
   // duplicates the icon
-  draggedObj = this.clone();
+  if (this.clonable){
+    draggedObj = this.clone();
+    draggedObj.desc = this.desc;
+    draggedObj.drag(dragMove, dragStart, dragEnd)
+    draggedObj.clonable = false;
+  }
+  else{
+    console.log("NOT CLONED")
+    this.lastX = this.attr().x;
+    this.lastY = this.attr().y;
+  }
 }
 
 function dragMove(dx, dy, x, y, ev) {
   // just so the mouse ptr is in the middle of the icon
-  draggedObj.attr({
-    x: x - (5 + this.attr().height/2), // where 5 is the body margin
-    y: y - (200 + this.attr().width/2) // where 200 is header height (rethink)
-  });
->>>>>>> 38113fe3b7c2a1d496f6cbc8fb5aa38b85d759cb
+  if (this.clonable){
+    console.log("MOVING AFTER CLONING")
+    draggedObj.attr({
+      x: x - (5 + this.attr().width/2), // where 5 is the body margin
+      y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+    });
+  }
+  else{
+    console.log("JUST MOVING")
+    this.attr({
+      x: x - (5 + this.attr().width/2), // where 5 is the body margin
+      y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+    });
+    console.log(`X: ${this.attr().x} and y: ${this.attr().y}`)
+  }
 }
 function dragEnd(ev) {
   // removes the icon from the screen
-  draggedObj.remove();
+  //draggedObj.remove();
 
   // if the mouse ptr is in the drawboard region on release, add an item
-  if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 150)){
+  if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280)){
     console.log(this.desc);
+  }
+  else{
+    console.log("REMOVING")
 
+    //if you move an existing object out of bound, bring back to last recorded coordinates
+    if (!this.clonable){
+      this.attr({
+        x: this.lastX,
+        y: this.lastY
+      });
+    }
+    else{
+      draggedObj.remove();
+    }
   }
 
 
-<<<<<<< HEAD
-function dragEnd() {
-  console.log("DragEnd");
-  this.attr({
-    fill:'black'
-  })
-=======
->>>>>>> 38113fe3b7c2a1d496f6cbc8fb5aa38b85d759cb
 }
 
 
@@ -142,6 +120,6 @@ function collapseRight(ev) {
 }
 
 function configModal(item){
-  
+
 
 }
