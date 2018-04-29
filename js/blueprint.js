@@ -78,6 +78,10 @@ function dragEnd(ev) {
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280)){
     console.log(this.desc);
+    if (!this.dblclickSet){
+      this.dblclick(configModal)
+      this.dblclickSet = true;
+    }
   }
   else{
     console.log("REMOVING")
