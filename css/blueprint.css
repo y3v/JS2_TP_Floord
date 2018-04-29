@@ -66,6 +66,26 @@ input.modalRadio {
 	width: 20px;
 	margin-right: 15px;
 }
+
+.modalButton {
+	padding: 10px;
+	width: 30%;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 20px;
+	background-color: #3c52f0;
+	color: white;
+	border-radius: 10px;
+	border: none;
+}
+
+.modalButton:hover {
+	background-color: #2980B9;
+	cursor: pointer;
+}
+
+
+/* Random content */
 .border {
   border: 2px solid black;
 }

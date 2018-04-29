@@ -39,54 +39,117 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 function dragStart(x, y, ev) {
-  // duplicates the icon
+
+  // creates new icon / element
   if (this.clonable){
-    draggedObj = this.clone();
-    draggedObj.desc = this.desc;
+
+    switch (this.desc) {
+      case 'wall':
+      case 'linewall':
+        draggedObj = s.line(x -50 , y, x + 50, y);
+        draggedObj.attr({
+          x1: x -50,
+          y1: y,
+          x2: x + 50,
+          y2: y,
+          stroke: 'white',
+          strokeWidth: 5
+        })
+        draggedObj.desc = 'linewall';
+        break;
+
+      default:
+        draggedObj = this.clone();
+        draggedObj.desc = this.desc;
+        break;
+    }
+
     draggedObj.drag(dragMove, dragStart, dragEnd)
     draggedObj.clonable = false;
   }
-  else{
+
+  else {
     console.log("NOT CLONED")
-    this.lastX = this.attr().x;
-    this.lastY = this.attr().y;
+
+    switch (this.desc) {
+      case 'wall':
+      case 'linewall':
+        this.lastX1 = this.attr().x1;
+        this.lastX2 = this.attr().x2;
+        this.lastY1 = this.attr().y1;
+        this.lastY2 = this.attr().y2;
+        break;
+
+      default:
+        this.lastX = this.attr().x;
+        this.lastY = this.attr().y;
+        break;
+    }
   }
 }
 
 function dragMove(dx, dy, x, y, ev) {
   // just so the mouse ptr is in the middle of the icon
   if (this.clonable){
-    console.log("MOVING AFTER CLONING")
-    draggedObj.attr({
-      x: x - (5 + this.attr().width/2), // where 5 is the body margin
-      y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
-    });
+
+    switch (this.desc) {
+      case 'wall':
+      case 'linewall':
+        draggedObj.attr({
+          x1: x -50,
+          y1: y - 280,
+          x2: x + 50,
+          y2: y -280 // where 200 is header height (rethink)
+        });
+        break;
+
+      default:
+        console.log("MOVING AFTER CLONING")
+        draggedObj.attr({
+          x: x - (5 + this.attr().width/2), // where 5 is the body margin
+          y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+        });
+        break;
+    }
   }
   else{
     console.log("JUST MOVING")
-    this.attr({
-      x: x - (5 + this.attr().width/2), // where 5 is the body margin
-      y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
-    });
-    console.log(`X: ${this.attr().x} and y: ${this.attr().y}`)
+
+    switch (this.desc) {
+      case 'wall':
+      case 'linewall':
+        this.attr({
+          x1: x -50,
+          y1: y - 280,
+          x2: x + 50,
+          y2: y -280 // where 200 is header height (rethink)
+        });
+        break;
+
+      default:
+        this.attr({
+          x: x - (5 + this.attr().width/2), // where 5 is the body margin
+          y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
+        });
+        break;
+    }
   }
 }
+
 function dragEnd(ev) {
   // removes the icon from the screen
   //draggedObj.remove();
 
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
-    console.log(this.desc);
 
     switch (this.desc) {
 
       case 'wall':
-        let data = {};
+      case 'linewall':
         if (!this.dblclickSet)
           this.dblclick(configModal);
         this.dblclickSet = true;
-        configModal(data)
         break;
 
       case 'table':
@@ -101,17 +164,31 @@ function dragEnd(ev) {
 
     //if you move an existing object out of bound, bring back to last recorded coordinates
     if (!this.clonable){
-      this.attr({
-        x: this.lastX,
-        y: this.lastY
-      });
+
+      switch (this.desc) {
+
+        case 'wall':
+        case 'linewall':
+          this.attr({
+            x1: this.lastX1,
+            x2: this.lastX2,
+            y1: this.lastY1,
+            y2: this.lastY2
+          });
+          break;
+
+        default:
+          this.attr({
+            x: this.lastX,
+            y: this.lastY
+          });
+          break;
+      }
     }
     else{
       draggedObj.remove();
     }
   }
-
-
 }
 
 
