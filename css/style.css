@@ -12,7 +12,7 @@ a {
 }
 a:hover{
   text-decoration: none;
-  color:white !important;
+  color:white;
 }
 
 #floord-logo{
@@ -64,6 +64,7 @@ a:hover{
 
 .restoBtn:hover, .restoBtn:focus {
     background-color: #2980B9;
+    color:white;
 }
 
 .dropdown-content {

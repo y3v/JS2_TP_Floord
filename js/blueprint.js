@@ -24,16 +24,16 @@ document.addEventListener('DOMContentLoaded', function(){
   // add all the elements to the menu
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
-    let itemFrame = s.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
+    let itemFrame = g.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
     let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
-    let icon = s.image(`../images/${items[i]}.png`, 20,20,20,20)
+    let icon = s.image(`../images/${items[i]}.png`, 50,50,50,50)
 
     itemFrame.attr({
       x: ix,
       fill:'#363ba0'
     })
 
-    g.add(itemFrame);
+    //g.add(itemFrame);
     g.add(icon)
     console.log(icon.attr());
 
