@@ -8,6 +8,8 @@ let shapes = []
 let items = ['wall', 'door', 'restroom', 'kitchen', 'table', 'bar']
 let colored = false;
 let MXY = {}
+let drawboard_coords = {}
+let draggedObj = {}
 
 document.addEventListener('DOMContentLoaded', function(){
   let menu = s.rect(0, (sur.outerHeight() - 150), sur.outerWidth(), 150)
@@ -25,58 +27,40 @@ document.addEventListener('DOMContentLoaded', function(){
   for (var i = 0; i < items.length; i++) {
     let g = s.group();
     let ix = i === 0 ? 5 :(i * (itemW + 10)) + 5
-    let icon = g.image(`../images/${items[i]}.png`, MXY.x, MXY.y + 10, itemH, itemH)
+    let icon = g.image(`../images/${items[i]}.png`, ix, MXY.y + 10, itemH, itemH)
 
-/*    let itemFrame = s.rect(MXY.x, MXY.y + 10, itemW, itemH, 5, 5);
-    itemFrame.attr({
-      x: ix,
-      fill:'#363ba0'
-    })
-    g.add(itemFrame);
-    */
-    console.log(icon.attr({
-      x: ix,
-      padding: 20
-    }
-    ));
-
-    // load the icons
-/*    Snap.load(`./images/${items[i]}.svg`, frag => {
-      console.log(g);
-      console.log(frag);
-      g.add(frag)
-      let lskd = g.select('svg')
-      let asd = Snap.parse(lskd)
-      console.log(asd);
-      lskd.attr({
-        height:200,
-        width:200
-      });
-    })*/
+    // Add drag(dragMove, dragStart, dragEnd) event
+    icon.drag(dragMove, dragStart, dragEnd)
+    icon.desc = items[i];
   }
 });
 
-
-
 function dragStart(x, y, ev) {
-  this.attr({
-    fill:'blue'
-  })
+  // duplicates the icon
+  draggedObj = this.clone();
 }
 
 function dragMove(dx, dy, x, y, ev) {
-  this.attr({
-    fill:'orange',
-    cx: x -5,
-    cy: y -205
-  })
+  // just so the mouse ptr is in the middle of the icon
+  draggedObj.attr({
+    x: x - (5 + this.attr().height/2), // where 5 is the body margin
+    y: y - (200 + this.attr().width/2) // where 200 is header height (rethink)
+  });
+}
+function dragEnd(ev) {
+  // removes the icon from the screen
+  draggedObj.remove();
+
+  // if the mouse ptr is in the drawboard region on release, add an item
+  if (ev.clientX > 0 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 150)){
+    console.log(this.desc);
+
+  }
+
+
 }
 
-function dragEnd() {
-  this.attr({
-    fill:'black'
-  })
-}
+
 
 function getBBox() {
   console.log(s);
@@ -100,6 +84,7 @@ function collapseRight(ev) {
   }
 }
 
-function placeImage(fragment) {
-  console.log(fragment);
+function configModal(item){
+  
+
 }
