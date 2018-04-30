@@ -14,6 +14,9 @@ let dragGroup = {}
 let currentDragged
 
 document.addEventListener('DOMContentLoaded', function(){
+  // just to get rid of the drawer
+  collapseRight()
+
   let menu = s.rect(0, (sur.outerHeight() - 150), sur.outerWidth(), 150)
   menu.attr({
     fill: BLUEPRINT_BGD,
@@ -67,6 +70,7 @@ function dragStart(x, y, ev) {
           strokeWidth: 5
         })
         draggedObj.desc = 'linewall';
+        draggedObj.drag(dragMove, dragStart, dragEnd)
         break;
 
       default:
@@ -235,15 +239,16 @@ function dragEnd(ev) {
 
 function configModal(item){
   let modal = $('<div>').addClass('modal');
-  let content = $('<div>').addClass('modal-content');
+  let content = $('<div>').attr('id', 'wallConfig').addClass('modal-content');
 
   content.append(configItem('width', 'number'));
   content.append(configItem('height', 'number'));
   content.append(configItem('position', 'radio'));
   content.append(configItem('x', 'number'));
   content.append(configItem('y', 'number'));
-  content.append(configButton(modal, "save"))
+  content.append(configButton(modal, "delete"))
   content.append(configButton(modal, "close"))
+  content.append(configButton(modal, "saveWall"))
 
   modal.append(content);
   $('body').append(modal);
@@ -282,10 +287,10 @@ function configItem(label, type) {
 
 function configTable(item, group){
   let modal = $('<div>').addClass('modal');
-  let content = $('<div>').addClass('modal-content');
+  let content = $('<form>').addClass('modal-content');
 
   content.append(configItem('seats', 'number'));
-  content.append(configButton(modal, "save", item, group))
+  content.append(configButton(modal, "saveTable", item, group))
   content.append(configButton(modal, "close", null, null))
 
   modal.append(content);
@@ -301,11 +306,24 @@ function configButton(modal, type, item, group) {
     button.on("click", e=> modal.remove())
   }
 
-  if (type == "save"){
+  if (type == "saveTable"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=>{
       item.seats = $('#itemSeats').val()
       let table = createTableGraphic(item, group)
+    })
+  }
+
+  if (type == "saveWall"){
+    button = $('<button>').addClass("modalButton").text(capitalize(type))
+    button.on("click", e=>{
+      let width = $('#itemWidth').val()
+      let height = $('#itemHeight').val()
+      let x = $('#itemX').val()
+      let y = $('#itemY').val()
+      let align = $('[checked]')
+      console.log(align);
+
     })
   }
   return button;
