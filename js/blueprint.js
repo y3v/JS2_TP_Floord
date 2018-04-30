@@ -64,7 +64,10 @@ function dragStart(x, y, ev) {
           strokeWidth: 5
         })
         draggedObj.desc = 'linewall';
+        draggedObj.alignment = 'horizontal';
+        draggedObj.size = 100;
         draggedObj.drag(dragMove, dragStart, dragEnd)
+        console.log(`mouseX: ${x}, mouseY: ${y}`);
         break;
 
       default:
@@ -118,9 +121,9 @@ function dragMove(dx, dy, x, y, ev) {
       case 'linewall':
         draggedObj.attr({
           x1: x -50,
-          y1: y - 280,
+          y1: y - 205,
           x2: x + 50,
-          y2: y -280 // where 200 is header height (rethink)
+          y2: y -205 // where 200 is header height (rethink)
         });
         break;
 
@@ -140,12 +143,17 @@ function dragMove(dx, dy, x, y, ev) {
     switch (this.desc) {
       case 'wall':
       case 'linewall':
-        this.attr({
-          x1: x -50,
-          y1: y - 205,
-          x2: x + 50,
-          y2: y -205 // where 200 is header height (rethink)
-        });
+        if (this.alignment === 'horizontal'){
+          this.attr({
+            x1: (x - (this.size / 2)),
+            y1: y - 205,
+            x2: (x + (this.size / 2)),
+            y2: y - 205 // where 200 is header height (rethink)
+          });
+        }
+        else {
+          // TODO: Vertical alignmnent
+        }
         break;
 
       default:
@@ -255,13 +263,13 @@ function dragEnd(ev) {
 
 //Create Dialog box for the Wall Object
 function configModal(item){
-  let modal = $('<div>').addClass('modal');
+  let modal = $('<div>').addClass('modal').attr('id', 'modal');
   let content = $('<div>').attr('id', 'wallConfig').addClass('modal-content');
 
   content.append(configItem('size', 'number'));
   content.append(configItem('thickness', 'number'));
-  content.append(configItem('alignment', 'radio'));
-  content.append(configButton(modal, "delete"))
+  content.append(configItem('alignment', 'radio', item));
+  content.append(configButton(modal, "delete", item))
   content.append(configButton(modal, "close"))
   content.append(configButton(modal, "saveWall", item))
 
@@ -273,7 +281,7 @@ function configModal(item){
 }
 
 //Configure Inputs within the dialog boxes
-function configItem(label, type) {
+function configItem(label, type, item) {
   let uLabel = capitalize(label);
   let option = $('<div>').attr('id', label);
 
@@ -348,26 +356,43 @@ function configButton(modal, type, item) {
     button.on("click", e=>{
       let size = $('#itemSize').val()
       let thiccness = $('#itemThickness').val()
-      let align = $('#hAlign').is(':checked') ? 'horizontal' : 'vertical'
 
-      if (size !== null && align === 'horizontal'){
-        item.attr({
-          x2:  item.attr().x1 + size,
-          y2: item.attr().y1,
-          strokeWidth: thiccness !== null ? thiccness : item.attr().strokeWidth
-        })
-      }
-      else if (size !== null && align === 'vertical'){
-        item.attr({
-          x2:  item.attr().x1,
-          y2: item.attr().y1 + size,
-          strokeWidth: thiccness !== null ? thiccness : item.attr().strokeWidth
-        })
+      if ($('#hAlign').is(':checked') || $('#vAlign').is(':checked')){
+        item.alignment = $('#hAlign').is(':checked') ? 'horizontal' : 'vertical'
       }
 
-
+      if (size !== '' && item.alignment === 'horizontal'){
+        let lineCenter = +item.attr().x1 + (item.size / 2)
+        item.attr({
+          x1: lineCenter - (size / 2),
+          x2: lineCenter + (size / 2),
+          y2: +item.attr().y1,
+          strokeWidth: thiccness !== '' ? thiccness : +item.attr().strokeWidth
+        })
+        item.size = size //save the new size if not null
+      }
+      else if (size !== '' && item.alignment === 'vertical'){
+        let lineCenter = +item.attr().y1 + (item.size / 2)
+        item.attr({
+          y1: lineCenter - (size / 2),
+          y2: lineCenter + (size / 2),
+          x2: +item.attr().x1,
+          strokeWidth: thiccness !== '' ? thiccness : +item.attr().strokeWidth
+        })
+        item.size = size //save the new size if not null
+      }
+      $('#modal').remove() // closes the modal
     })
   }
+
+  if (type === 'delete'){
+    button = $('<button>').addClass("modalButton").text(capitalize(type))
+    button.click(e => {
+      item.remove()
+      $('#modal').remove()
+    })
+  }
+
   return button;
 }
 
