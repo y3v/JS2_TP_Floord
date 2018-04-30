@@ -11,7 +11,8 @@ let MXY = {}
 let drawboard_coords = {}
 let draggedObj = {}
 let dragGroup = {}
-let currentDragged
+const TABLE_STYLE = "fill:white;"
+let groupBounds
 
 document.addEventListener('DOMContentLoaded', function(){
   // just to get rid of the drawer
@@ -45,13 +46,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 function dragStart(x, y, ev) {
 
-  /*if (currentDragged != null){
-    if (currentDragged != this.desc){
-        console.log("DRAG DATA RESET")
-        this.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
-    }
-  }*/
-
   // creates new icon / element
   if (this.clonable){
 
@@ -84,9 +78,10 @@ function dragStart(x, y, ev) {
 
 
     dragGroup.drag(dragMove, dragStart, dragEnd)
+    //adds drag offset properties for the group -- this is necessary to ensure proper translation during dragMove()
     dragGroup.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
 
-
+    //give a clonable property both to the menu icon as well as the group, so that it doesn't get duplicated
     draggedObj.clonable = false;
     dragGroup.clonable = false;
   }
@@ -112,8 +107,10 @@ function dragStart(x, y, ev) {
 }
 
 function dragMove(dx, dy, x, y, ev) {
-  if (this.clonable){
 
+  //for the initial drag event from menu to SVG
+  this.resizing = false;
+  if (this.clonable){
     switch (this.desc) {
       case 'wall':
       case 'linewall':
@@ -134,6 +131,7 @@ function dragMove(dx, dy, x, y, ev) {
         break;
     }
   }
+  //To move elements in the SVG once they have already been placed
   else{
     console.log("JUST MOVING")
 
@@ -149,12 +147,13 @@ function dragMove(dx, dy, x, y, ev) {
         break;
 
       default:
-
-        //console.log(dragData)
+        //if offset properties are set, use them, otherwise (on first drag) use only the dx and dy properties
         if (this.dragData != null){
           this.attr({
               transform: `t${dx + this.dragData.ox},${dy + this.dragData.oy}`
           });
+          /*This holds the dx and dy properties that will be added to the overall offset properties
+          in the dragEnd() method*/
           this.dragData.x = dx;
           this.dragData.y = dy;
         }
@@ -171,18 +170,25 @@ function dragMove(dx, dy, x, y, ev) {
 
 function dragEnd(ev) {
 
+  console.log("DRAGEND")
+  /*//FOR TESTING
   console.log("THIS -->" + this.desc)
   console.log("Current -->" + currentDragged)
   if (this.dragData != null){
     console.log(this.dragData.ox)
-  }
+  }*/
 
-  currentDragged = this.desc;
-
-  if (this.dragData != null){
+  //Apply the dx and dy properties from the dragMove() method to the overall offset
+  if (this.dragData != null && !this.resizing){
+    console.log("ADDING OFFSETS")
     this.dragData.ox += this.dragData.x
     this.dragData.oy += this.dragData.y
   }
+  /*else if (this.resizing){
+    this.dragData.ox -= this.dragData.x
+    this.dragData.oy -= this.dragData.y
+  }*/
+  this.resizing = true;
 
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
@@ -198,7 +204,7 @@ function dragEnd(ev) {
 
       case 'table':
         if (!this.dblclickSet){
-          dragGroup.dblclick(a=>configTable(this, dragGroup))
+          this.dblclick(a=>configTable(this))
         }
         this.dblclickSet = true;
         break;
@@ -207,8 +213,8 @@ function dragEnd(ev) {
   else{
     console.log("REMOVING")
 
-    //if you move an existing object out of bound, bring back to last recorded coordinates
-    if (!this.clonable){
+    //if you move an existing object out of bound, bring back to last recorded coordinates (using the last... properties)
+    /*if (!this.clonable){
 
       switch (this.desc) {
 
@@ -232,11 +238,11 @@ function dragEnd(ev) {
     }
     else{
       draggedObj.remove();
-    }
+    }*/
   }
 }
 
-
+//Create Dialog box for the Wall Object
 function configModal(item){
   let modal = $('<div>').addClass('modal');
   let content = $('<div>').attr('id', 'wallConfig').addClass('modal-content');
@@ -257,6 +263,7 @@ function configModal(item){
 
 }
 
+//Configure Inputs within the dialog boxes
 function configItem(label, type) {
   let uLabel = capitalize(label);
   let option = $('<div>').attr('id', label);
@@ -285,13 +292,18 @@ function configItem(label, type) {
   return option;
 }
 
-function configTable(item, group){
+//Configure Diaglog box for the Table Object
+function configTable(item){
+
+  //console.log("CREATING FORM")
+
   let modal = $('<div>').addClass('modal');
-  let content = $('<form>').addClass('modal-content');
+  let content = $('<div>').addClass('modal-content');
 
   content.append(configItem('seats', 'number'));
-  content.append(configButton(modal, "saveTable", item, group))
-  content.append(configButton(modal, "close", null, null))
+  content.append(configItem('position', 'radio'));
+  content.append(configButton(modal, "saveTable", item))
+  content.append(configButton(modal, "close", null))
 
   modal.append(content);
   $('body').append(modal);
@@ -299,7 +311,8 @@ function configTable(item, group){
   removeIfClickedOutside(modal)
 }
 
-function configButton(modal, type, item, group) {
+//Configure buttons and action listeners for the buttons in the dialog boxes
+function configButton(modal, type, item) {
   let button;
   if (type=="close"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
@@ -310,7 +323,14 @@ function configButton(modal, type, item, group) {
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=>{
       item.seats = $('#itemSeats').val()
-      let table = createTableGraphic(item, group)
+      if ($('#hAlign').is(':checked')){
+        item.horizontal = true;
+      }
+      else{
+        item.horizontal = false;
+      }
+      let table = createTableGraphic(item)
+      modal.remove()
     })
   }
 
@@ -329,28 +349,64 @@ function configButton(modal, type, item, group) {
   return button;
 }
 
-function createTableGraphic(table, group){
-  console.log(table)
-  let seats = table.seats;
+//Change the graphic for the table depending on the seats available
+function createTableGraphic(group){
+  groupBounds = group.getBBox()
+
+  console.log(group)
+  let seats = group.seats;
   if (seats%2 !== 0){
     seats++; //want an even number
   }
 
-  let newTable = s.rect(group.dragData.ox,group.dragData.oy,100, (seats/2) * 100)
-  group.drag(dragMove, dragStart, dragEnd)
-  newTable.clonable = table.clonable;
-  newTable.desc = table.desc;
-  newTable.events = table.events
-  console.log(table.events[1]);
-  console.log(newTable.attr().x)
-  group.add(newTable);
-  table.remove()
+  let offsetX = group.dragData.x, offsetY = group.dragData.y
+
+  /*if (group.resizing){
+    offsetX -= group.dragData.x;
+    offsetY -= group.dragData.y;
+  }*/
+
+  console.log(groupBounds)
+  group.clear()
+  let rect;
+  if (!group.horizontal){
+    rect = group.rect(groupBounds.x - offsetX, groupBounds.y - offsetY ,100,(seats/2) * 100, 15, 15)
+    .attr({
+      style:TABLE_STYLE
+    })
+  }
+  else{
+    rect = group.rect(groupBounds.x, groupBounds.y , (seats/2) * 100,100, 15, 15)
+    .attr({
+      style:TABLE_STYLE
+    })
+  }
+  console.log(rect)
+  groupBounds = rect.getBBox()
+  group.circle(groupBounds.cx, groupBounds.cy, 40)
+    .attr({
+      style:"stroke:#363ba0;fill:white;stroke-width:5;"
+    })
+  group.text(groupBounds.cx-11, groupBounds.cy+12, seats)
+    .attr({
+      style:"font-weight:bold;font-size:40px;text-align:left;text-color:#363ba0;"
+    })
+
+    console.log(group.dragData.x)
+    console.log(group.dragData.y)
+    console.log(group.dragData.ox)
+    console.log(group.dragData.oy)
+
+  group.resizing = true;
+
+
 }
 
 function getBBox() {
   console.log(s);
 }
 
+//Collapse menu on the right
 function collapseRight(ev) {
   let img = $('#collexpand')
 
@@ -369,10 +425,12 @@ function collapseRight(ev) {
   }
 }
 
+//Capitalize first letter of string
 function capitalize(str) {
     return str[0].toUpperCase() + str.slice(1);
 }
 
+//Simple functions that close the dialog box if click outside of the dialog box
 function removeIfClickedOutside(modal){
   //if you click anywhere outside of the dialog box (modal), it will close
   window.onclick = function(event) {
