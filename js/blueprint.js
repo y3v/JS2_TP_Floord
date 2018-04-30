@@ -56,9 +56,9 @@ function dragStart(x, y, ev) {
         draggedObj = s.line(x -50 , y, x + 50, y);
         draggedObj.attr({
           x1: x -50,
-          y1: y,
+          y1: y -200,
           x2: x + 50,
-          y2: y,
+          y2: y -200,
           stroke: 'white',
           strokeWidth: 5
         })
@@ -136,9 +136,9 @@ function dragMove(dx, dy, x, y, ev) {
       case 'linewall':
         this.attr({
           x1: x -50,
-          y1: y - 280,
+          y1: y - 205,
           x2: x + 50,
-          y2: y -280 // where 200 is header height (rethink)
+          y2: y -205 // where 200 is header height (rethink)
         });
         break;
 
@@ -172,7 +172,7 @@ function dragEnd(ev) {
       case 'wall':
       case 'linewall':
         if (!this.dblclickSet)
-          this.dblclick(configModal);
+          this.dblclick(a => configModal(this));
         this.dblclickSet = true;
         break;
 
@@ -221,14 +221,12 @@ function configModal(item){
   let modal = $('<div>').addClass('modal');
   let content = $('<div>').attr('id', 'wallConfig').addClass('modal-content');
 
-  content.append(configItem('width', 'number'));
-  content.append(configItem('height', 'number'));
-  content.append(configItem('position', 'radio'));
-  content.append(configItem('x', 'number'));
-  content.append(configItem('y', 'number'));
+  content.append(configItem('size', 'number'));
+  content.append(configItem('thickness', 'number'));
+  content.append(configItem('alignment', 'radio'));
   content.append(configButton(modal, "delete"))
   content.append(configButton(modal, "close"))
-  content.append(configButton(modal, "saveWall"))
+  content.append(configButton(modal, "saveWall", item))
 
   modal.append(content);
   $('body').append(modal);
@@ -297,12 +295,25 @@ function configButton(modal, type, item, group) {
   if (type == "saveWall"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=>{
-      let width = $('#itemWidth').val()
-      let height = $('#itemHeight').val()
-      let x = $('#itemX').val()
-      let y = $('#itemY').val()
-      let align = $('[checked]')
-      console.log(align);
+      let size = $('#itemSize').val()
+      let thiccness = $('#itemThickness').val()
+      let align = $('#hAlign').is(':checked') ? 'horizontal' : 'vertical'
+
+      if (size !== null && align === 'horizontal'){
+        item.attr({
+          x2:  item.attr().x1 + size,
+          y2: item.attr().y1,
+          strokeWidth: thiccness !== null ? thiccness : item.attr().strokeWidth
+        })
+      }
+      else if (size !== null && align === 'vertical'){
+        item.attr({
+          x2:  item.attr().x1,
+          y2: item.attr().y1 + size,
+          strokeWidth: thiccness !== null ? thiccness : item.attr().strokeWidth
+        })
+      }
+
 
     })
   }
