@@ -12,6 +12,8 @@ let drawboard_coords = {}
 let draggedObj = {}
 let dragGroup = {}
 const TABLE_STYLE = "fill:white; stroke:#232670; stroke-width:5;"
+const KITCHEN_STYLE = "fill:#cec3db; stroke:#232670; stroke-width:5;"
+const BAR_STYLE = "fill:#cb7f6e; stroke:#232670; stroke-width:10;"
 let groupBounds
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -72,6 +74,7 @@ function dragStart(x, y, ev) {
         draggedObj.desc = this.desc;
         dragGroup.desc = this.desc;
         dragGroup.dragCount = 0;
+        dragGroup.draggedObj = draggedObj
         dragGroup.add(draggedObj);
         break;
     }
@@ -204,6 +207,8 @@ function dragEnd(ev) {
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
 
+    console.log(this.desc)
+
     switch (this.desc) {
 
       case 'wall':
@@ -219,6 +224,28 @@ function dragEnd(ev) {
         }
         this.dblclickSet = true;
         break;
+
+      case 'kitchen':
+        if (!this.dblclickSet){
+          this.dblclick(b=>configGenericBlock(this))
+        }
+        this.dblclickSet = true;
+        break;
+
+      case 'bar':
+        if (!this.dblclickSet){
+          this.dblclick(b=>configGenericBlock(this))
+        }
+        this.dblclickSet = true;
+        break;
+
+      case 'restroom':
+        if (!this.dblclickSet){
+          this.dblclick(b=>configGenericBlock(this))
+        }
+        this.dblclickSet = true;
+        break;
+
     }
   }
   else{
@@ -280,7 +307,7 @@ function configItem(label, type) {
   let option = $('<div>').attr('id', label);
 
   if (type !== 'radio'){
-    option.append($('<input>').attr('type', type).attr('id', `item${uLabel}`))
+    option.append($('<input>').attr('type', type).attr('id', `item${uLabel}`).attr('id', `item${uLabel}`))
     .prepend($('<label>').attr('for', `item${uLabel}`).text(uLabel))
     .addClass('itemConfig');
   }
@@ -322,15 +349,35 @@ function configTable(item){
   removeIfClickedOutside(modal)
 }
 
+//Configure Diaglog box for the Kitchen Object
+function configGenericBlock(item){
+
+  console.log("KITCHEN Modal create")
+
+  let modal = $('<div>').addClass('modal');
+  let content = $('<div>').addClass('modal-content');
+
+  content.append(configItem('length', 'number'));
+  content.append(configItem('height', 'number'));
+  content.append(configButton(modal, "saveKitchen", item))
+  content.append(configButton(modal, "close", null))
+
+  modal.append(content);
+  $('body').append(modal);
+
+  removeIfClickedOutside(modal)
+}
+
 //Configure buttons and action listeners for the buttons in the dialog boxes
 function configButton(modal, type, item) {
+  console.log(`TYPE: ${type}`)
   let button;
   if (type=="close"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=> modal.remove())
   }
 
-  if (type == "saveTable"){
+  else if (type == "saveTable"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=>{
       item.seats = $('#itemSeats').val()
@@ -345,7 +392,8 @@ function configButton(modal, type, item) {
     })
   }
 
-  if (type == "saveWall"){
+
+  else if (type == "saveWall"){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.on("click", e=>{
       let width = $('#itemWidth').val()
@@ -357,6 +405,21 @@ function configButton(modal, type, item) {
 
     })
   }
+  else{
+    button = $('<button>').addClass("modalButton").text(capitalize(type))
+    button.on("click", event=>{
+      console.log("SAVE KITCHEN BUTTON PRESSED")
+      console.log($('#itemLength').val())
+      console.log($('#itemHeight').val())
+      item.length = $('#itemLength').val()
+      item.width = $('#itemHeight').val()
+      createGenericBlock(item)
+      modal.remove()
+      console.log("SAVE KITCHEN BUTTON ENDED")
+    })
+  }
+
+  console.log(button)
   return button;
 }
 
@@ -394,7 +457,7 @@ function createTableGraphic(group){
   }
   else{
     rect = group.rect(groupBounds.x - offsetX, groupBounds.y  - offsetY , (seats/2) * 100,100, 15, 15)
-    .attr({
+  .attr({
       style:TABLE_STYLE
     })
   }
@@ -415,6 +478,59 @@ function createTableGraphic(group){
     console.log(group.dragData.oy)
 
   group.resizing = true;
+
+
+}
+
+//Create Kitchen object on SVG
+function createGenericBlock(block){
+
+  let bbox = block.getBBox()
+
+  console.log(block)
+  console.log(bbox)
+  console.log(block.length)
+  console.log(block.width)
+
+  let iconW;
+  let iconH;
+
+  if (block.width < 140){
+    iconW = 90;
+    iconH = 90;
+  }
+  else{
+    iconW = 130;
+    iconH = 130;
+  }
+
+  block.clear()
+
+  let rect
+  console.log(block.desc)
+  if(block.desc == "bar"){
+    rect = block.rect(bbox.x - block.length/2, bbox.y - block.width/2 + 200, block.length, block.width, 15, 15).attr({style:BAR_STYLE})
+  }
+  else{
+    rect = block.rect(bbox.x - block.length/2, bbox.y - block.width/2 + 200, block.length, block.width, 15, 15).attr({style:KITCHEN_STYLE})
+  }
+
+  bbox = rect.getBBox()
+
+  switch(block.desc){
+    case "kitchen":
+      block.image(`../images/kitchen2.png`, bbox.cx - iconW/2, bbox.cy - iconH/2, iconW, iconH);
+      break;
+    case "restroom":
+      block.image(`../images/restroom2.png`, bbox.cx - iconW/2, bbox.cy - iconH/2, iconW, iconH);
+      break;
+    case "bar":
+      block.image(`../images/bar2.png`, bbox.cx - iconW/2, bbox.cy - iconH/2, iconW, iconH)
+      block.attr({
+        style:BAR_STYLE
+      });
+      break;
+  }
 
 
 }
