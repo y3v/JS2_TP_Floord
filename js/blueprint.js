@@ -41,7 +41,14 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 function dragStart(x, y, ev) {
-  currentDragged = draggedObj.desc;
+
+  /*if (currentDragged != null){
+    if (currentDragged != this.desc){
+        console.log("DRAG DATA RESET")
+        this.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
+    }
+  }*/
+
   // creates new icon / element
   if (this.clonable){
 
@@ -65,24 +72,23 @@ function dragStart(x, y, ev) {
       default:
         draggedObj = this.clone();
         draggedObj.desc = this.desc;
+        dragGroup.desc = this.desc;
         dragGroup.add(draggedObj);
         break;
     }
 
+
+
     dragGroup.drag(dragMove, dragStart, dragEnd)
     dragGroup.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
+
+
     draggedObj.clonable = false;
+    dragGroup.clonable = false;
   }
 
   else {
     console.log("NOT CLONED")
-
-    console.log(currentDragged)
-    console.log(draggedObj.desc)
-    if (currentDragged != draggedObj.desc){
-      console.log("DRAG DATA RESET")
-      dragGroup.dragData = {'ox':0, 'oy':0, 'x' : 0, 'y':0}
-    }
 
     switch (this.desc) {
       case 'wall':
@@ -141,11 +147,18 @@ function dragMove(dx, dy, x, y, ev) {
       default:
 
         //console.log(dragData)
-        this.attr({
-            transform: `t${dx + dragGroup.dragData.ox},${dy + dragGroup.dragData.oy}`
-        });
-        dragGroup.dragData.x = dx;
-        dragGroup.dragData.y = dy;
+        if (this.dragData != null){
+          this.attr({
+              transform: `t${dx + this.dragData.ox},${dy + this.dragData.oy}`
+          });
+          this.dragData.x = dx;
+          this.dragData.y = dy;
+        }
+        else{
+          this.attr({
+              transform: `t${dx},${dy}`
+          });
+        }
         //console.log(`${dx},${dy}`)
         break;
     }
@@ -153,12 +166,19 @@ function dragMove(dx, dy, x, y, ev) {
 }
 
 function dragEnd(ev) {
-  // removes the icon from the screen
-  //draggedObj.remove();
 
-  dragGroup.dragData.ox += dragGroup.dragData.x
-  dragGroup.dragData.oy += dragGroup.dragData.y
-  //console.log(`${dragData.ox},${dragData.oy}`)
+  console.log("THIS -->" + this.desc)
+  console.log("Current -->" + currentDragged)
+  if (this.dragData != null){
+    console.log(this.dragData.ox)
+  }
+
+  currentDragged = this.desc;
+
+  if (this.dragData != null){
+    this.dragData.ox += this.dragData.x
+    this.dragData.oy += this.dragData.y
+  }
 
   // if the mouse ptr is in the drawboard region on release, add an item
   if (ev.clientX > 50 && ev.clientX < sur.outerWidth() && ev.clientY < (sur.outerHeight() - 280) && ev.clientY > 258){
@@ -297,7 +317,8 @@ function createTableGraphic(table, group){
   if (seats%2 !== 0){
     seats++; //want an even number
   }
-  let newTable = s.rect(table.attr().x,table.attr().y,100, (seats/2) * 100)
+
+  let newTable = s.rect(group.dragData.ox,group.dragData.oy,100, (seats/2) * 100)
   group.drag(dragMove, dragStart, dragEnd)
   newTable.clonable = table.clonable;
   newTable.desc = table.desc;
