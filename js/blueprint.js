@@ -433,7 +433,7 @@ function configButton(modal, type, item) {
     })
   }
 
-  if (type === 'delete'){
+  else if (type === 'delete'){
     button = $('<button>').addClass("modalButton").text(capitalize(type))
     button.click(e => {
       item.remove()
