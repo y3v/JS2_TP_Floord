@@ -11,7 +11,7 @@ let MXY = {}
 let drawboard_coords = {}
 let draggedObj = {}
 let dragGroup = {}
-const TABLE_STYLE = "fill:white;"
+const TABLE_STYLE = "fill:white; stroke:#232670; stroke-width:5;"
 let groupBounds
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -71,6 +71,7 @@ function dragStart(x, y, ev) {
         draggedObj = this.clone();
         draggedObj.desc = this.desc;
         dragGroup.desc = this.desc;
+        dragGroup.dragCount = 0;
         dragGroup.add(draggedObj);
         break;
     }
@@ -87,7 +88,7 @@ function dragStart(x, y, ev) {
   }
 
   else {
-    console.log("NOT CLONED")
+    //console.log("NOT CLONED")
 
     switch (this.desc) {
       case 'wall':
@@ -109,6 +110,7 @@ function dragStart(x, y, ev) {
 function dragMove(dx, dy, x, y, ev) {
 
   //for the initial drag event from menu to SVG
+  this.dragCount++;
   this.resizing = false;
   if (this.clonable){
     switch (this.desc) {
@@ -123,7 +125,7 @@ function dragMove(dx, dy, x, y, ev) {
         break;
 
       default:
-        console.log("MOVING AFTER CLONING")
+        //console.log("MOVING AFTER CLONING")
         draggedObj.attr({
           x: x - (5 + this.attr().width/2), // where 5 is the body margin
           y: y - (200 + this.attr().height/2) // where 200 is header height (rethink)
@@ -133,7 +135,7 @@ function dragMove(dx, dy, x, y, ev) {
   }
   //To move elements in the SVG once they have already been placed
   else{
-    console.log("JUST MOVING")
+    //console.log("JUST MOVING")
 
     switch (this.desc) {
       case 'wall':
@@ -170,7 +172,7 @@ function dragMove(dx, dy, x, y, ev) {
 
 function dragEnd(ev) {
 
-  console.log("DRAGEND")
+  console.log("DRAG END!!")
   /*//FOR TESTING
   console.log("THIS -->" + this.desc)
   console.log("Current -->" + currentDragged)
@@ -181,8 +183,17 @@ function dragEnd(ev) {
   //Apply the dx and dy properties from the dragMove() method to the overall offset
   if (this.dragData != null && !this.resizing){
     console.log("ADDING OFFSETS")
+
+    this.dragData.ox2 = this.dragData.ox;
+    this.dragData.oy2 = this.dragData.oy;
+
     this.dragData.ox += this.dragData.x
     this.dragData.oy += this.dragData.y
+
+    /*console.log(this.dragData.x)
+    console.log(this.dragData.y)
+    console.log(this.dragData.ox)
+    console.log(this.dragData.oy)*/
   }
   /*else if (this.resizing){
     this.dragData.ox -= this.dragData.x
@@ -211,7 +222,7 @@ function dragEnd(ev) {
     }
   }
   else{
-    console.log("REMOVING")
+    //console.log("REMOVING")
 
     //if you move an existing object out of bound, bring back to last recorded coordinates (using the last... properties)
     /*if (!this.clonable){
@@ -351,9 +362,14 @@ function configButton(modal, type, item) {
 
 //Change the graphic for the table depending on the seats available
 function createTableGraphic(group){
+  console.log(`Dragged: ${group.dragCount}`)
+
   groupBounds = group.getBBox()
 
-  console.log(group)
+  //console.log(group)
+  if (group.resizing != null){
+    console.log(group.resizing)
+  }
   let seats = group.seats;
   if (seats%2 !== 0){
     seats++; //want an even number
@@ -361,10 +377,11 @@ function createTableGraphic(group){
 
   let offsetX = group.dragData.x, offsetY = group.dragData.y
 
-  /*if (group.resizing){
-    offsetX -= group.dragData.x;
-    offsetY -= group.dragData.y;
-  }*/
+  if (group.dragData.ox2 != null){
+    offsetX += group.dragData.ox2;
+    offsetY += group.dragData.oy2;
+  }
+
 
   console.log(groupBounds)
   group.clear()
@@ -376,12 +393,12 @@ function createTableGraphic(group){
     })
   }
   else{
-    rect = group.rect(groupBounds.x, groupBounds.y , (seats/2) * 100,100, 15, 15)
+    rect = group.rect(groupBounds.x - offsetX, groupBounds.y  - offsetY , (seats/2) * 100,100, 15, 15)
     .attr({
       style:TABLE_STYLE
     })
   }
-  console.log(rect)
+  //console.log(rect)
   groupBounds = rect.getBBox()
   group.circle(groupBounds.cx, groupBounds.cy, 40)
     .attr({
