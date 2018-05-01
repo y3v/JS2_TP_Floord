@@ -59,9 +59,9 @@ function dragStart(x, y, ev) {
         draggedObj = s.line(x -50 , y, x + 50, y);
         draggedObj.attr({
           x1: x -50,
-          y1: y -200,
+          y1: y -150,
           x2: x + 50,
-          y2: y -200,
+          y2: y -150,
           stroke: 'white',
           strokeWidth: 5
         })
@@ -124,9 +124,9 @@ function dragMove(dx, dy, x, y, ev) {
       case 'linewall':
         draggedObj.attr({
           x1: x -50,
-          y1: y - 205,
+          y1: y - 150,
           x2: x + 50,
-          y2: y -205 // where 200 is header height (rethink)
+          y2: y -150 // where 200 is header height (rethink)
         });
         break;
 
