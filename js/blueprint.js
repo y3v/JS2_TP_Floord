@@ -631,6 +631,14 @@ var windowScroll = function() {
   });
 };
 
+//Set the listeners for the library on the right of the SVG
+let setStatListeners = function() {
+  $('#lib-graph').on('dblclick', ev=>{
+    alert('GRAPH CLICKED')
+  });
+}
+
 $(function(){
   windowScroll();
+  setStatListeners();
 });

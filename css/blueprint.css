@@ -99,8 +99,7 @@ input.modalRadio {
     right: 50px;
     width: 400px;
     display: none;
-    overflow: hidden;
-    background: #107b10;
+
     transform: translateX(100%);
     -webkit-transform: translateX(100%);
 }
@@ -113,7 +112,8 @@ input.modalRadio {
 }
 .lib{
   background-color: white;
-  height: 940px;
+  height: 900px;
+  margin-top:50px;
 }
 .drawboard{
   height: 1000px;
@@ -204,4 +204,20 @@ input.modalRadio {
   100% {
     -webkit-transform: translateX(100%);
   }
+}
+
+.lib-icon{
+  display:inline-block;
+  font-size:100px;
+  margin:15px 55px;
+  border: 5px solid #7b69ec;
+  padding:10px;
+  border-radius:70px;
+}
+
+.lib-icon:hover{
+  background-color: #7b69ec;
+  color:white;
+  border: 5px solid #3d3090;
+  cursor:pointer;
 }
