@@ -262,6 +262,9 @@ h1, h2, h3, h4, h5, h6 {
 #fh5co-header.navbar-fixed-top .navbar-brand {
   color: #6173f4;
 }
+#fh5co-header.navbar-hidden {
+  display: : none;
+}
 #fh5co-header.navbar-fixed-top #navbar li a {
   color: rgba(0, 0, 0, 0.5);
   -webkit-transition: 0.3s;

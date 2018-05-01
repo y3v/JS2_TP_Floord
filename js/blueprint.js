@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function(){
   })
   MXY = menu.getBBox();
   console.log(MXY);
-  let itemW = (MXY.w / items.length) - 10
+  let itemW = (MXY.w / items.length) - 120
   let itemH = MXY.h - 20
 
   let bbox = s.getBBox();
@@ -581,14 +581,14 @@ function collapseRight(ev) {
   // IF EXPANDED
   if (img.attr('src').includes('collapse')){
     img.attr('src', './images/hamburger.png');
-    $('#lib-container').css('width', '45px');
+    $('#lib-container').css('width', '45px').addClass("dismiss").removeClass("selected");
     $('#svg0').attr('width', 'calc(100% - 50px)');
   }
 
   // IF COLLAPSED
   else {
     img.attr('src', './images/collapse.png');
-    $('#lib-container').css('width', '19%');
+    $('#lib-container').css('width', '19.65%').addClass("selected").removeClass("dismiss");
     $('#svg0').attr('width', '80%');
   }
 }
@@ -608,3 +608,29 @@ function removeIfClickedOutside(modal){
     }
   }
 }
+
+var windowScroll = function() {
+  var lastScrollTop = 0;
+
+  $(window).scroll(function(event){
+
+      var header = $('#fh5co-header'),
+      scrlTop = $(this).scrollTop();
+
+    if ( scrlTop > 200) {
+      //if scroll is outside of the home area, fix nav bar to the top of the page -- written by Yev
+      console.log("LOWER")
+      header.addClass('navbar-hidden fh5co-animated fadeOutUp');
+      header.removeClass('fadeInDown');
+    } else{
+      console.log("UPPER")
+      header.addClass('navbar-fixed-top fh5co-animated fadeInDown')
+      header.removeClass('navbar-hidden fadeOutUp');
+    }
+
+  });
+};
+
+$(function(){
+  windowScroll();
+});

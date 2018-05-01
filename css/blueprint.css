@@ -21,12 +21,13 @@ body{
 }
 
 .modal {
+    display:block !important;
     /* display: none; Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
-    top: 0;
+    top: 100px;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
@@ -93,8 +94,15 @@ input.modalRadio {
   height:200px;
 }
 .libcontainer {
-  width:19%;
-  height: 1000px;
+    position: absolute;
+    top: 5px;
+    right: 50px;
+    width: 400px;
+    display: none;
+    overflow: hidden;
+    background: #107b10;
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
 }
 .inlineb {
   display: inline-block;
@@ -149,4 +157,51 @@ input.modalRadio {
 /* MEDIA QUERY FOR MOBILE */
 @media only screen and (max-width:640px){
 
+}
+
+.selected {
+  animation: slide-in 0.5s forwards;
+  margin-right:-45px;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+
+.dismiss {
+  animation: slide-out 0.5s forwards;
+  -webkit-animation: slide-out 0.5s forwards;
+}
+
+@keyframes slide-in {
+  0 {
+    -webkit-transform: translateX(100%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
+}
+
+@-webkit-keyframes slide-in {
+  0 {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+  }
 }
