@@ -14,6 +14,7 @@ let dragGroup = {}
 const TABLE_STYLE = "fill:white; stroke:#232670; stroke-width:5;"
 const KITCHEN_STYLE = "fill:#cec3db; stroke:#232670; stroke-width:5;"
 const BAR_STYLE = "fill:#cb7f6e; stroke:#232670; stroke-width:10;"
+const HEADER_HEIGHT = 155;
 let groupBounds
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -59,11 +60,11 @@ function dragStart(x, y, ev) {
         draggedObj = s.line(x -50 , y, x + 50, y);
         draggedObj.attr({
           x1: x -50,
-          y1: y -150,
+          y1: y - HEADER_HEIGHT,
           x2: x + 50,
-          y2: y -150,
+          y2: y - HEADER_HEIGHT,
           stroke: 'white',
-          strokeWidth: 5
+          strokeWidth: 8
         })
         draggedObj.desc = 'linewall';
         draggedObj.alignment = 'horizontal';
@@ -99,10 +100,10 @@ function dragStart(x, y, ev) {
     switch (this.desc) {
       case 'wall':
       case 'linewall':
-        this.lastX1 = this.attr().x1;
-        this.lastX2 = this.attr().x2;
-        this.lastY1 = this.attr().y1;
-        this.lastY2 = this.attr().y2;
+        this.lastX1 = +this.attr().x1;
+        this.lastX2 = +this.attr().x2;
+        this.lastY1 = +this.attr().y1;
+        this.lastY2 = +this.attr().y2;
         break;
 
       default:
@@ -124,9 +125,9 @@ function dragMove(dx, dy, x, y, ev) {
       case 'linewall':
         draggedObj.attr({
           x1: x -50,
-          y1: y - 150,
+          y1: y - HEADER_HEIGHT,
           x2: x + 50,
-          y2: y -150 // where 200 is header height (rethink)
+          y2: y - HEADER_HEIGHT // where 200 is header height (rethink)
         });
         break;
 
@@ -149,14 +150,21 @@ function dragMove(dx, dy, x, y, ev) {
         if (this.alignment === 'horizontal'){
           this.attr({
             x1: (x - (this.size / 2)),
-            y1: y - 205,
+            y1: y - HEADER_HEIGHT,
             x2: (x + (this.size / 2)),
-            y2: y - 205 // where 200 is header height (rethink)
+            y2: y - HEADER_HEIGHT // where 200 is header height (rethink)
           });
         }
         else {
-          // TODO: Vertical alignmnent
+          console.log('before', this.attr() );
+          this.attr({
+            x1: x - 5,
+            y1: (y - (this.size / 2)) - HEADER_HEIGHT,
+            x2: x - 5,
+            y2: (y + (this.size / 2)) - HEADER_HEIGHT
+          })
         }
+        console.log(this.attr());
         break;
 
       default:
@@ -409,25 +417,26 @@ function configButton(modal, type, item) {
         item.alignment = $('#hAlign').is(':checked') ? 'horizontal' : 'vertical'
       }
 
-      if (size !== '' && item.alignment === 'horizontal'){
-        let lineCenter = +item.attr().x1 + (item.size / 2)
+      if (item.alignment === 'horizontal'){
+        if (size !== '')
+          item.size = Number(size) //save the new size if not null
         item.attr({
-          x1: lineCenter - (size / 2),
-          x2: lineCenter + (size / 2),
+          x1: +item.attr().x1,
+          x2: +item.attr().x1 + item.size,
           y2: +item.attr().y1,
           strokeWidth: thiccness !== '' ? thiccness : +item.attr().strokeWidth
         })
-        item.size = size //save the new size if not null
       }
-      else if (size !== '' && item.alignment === 'vertical'){
-        let lineCenter = +item.attr().y1 + (item.size / 2)
+      else {
+        if (size !== '')
+          item.size = Number(size) //save the new size if not null
+
         item.attr({
-          y1: lineCenter - (size / 2),
-          y2: lineCenter + (size / 2),
+          y1: +item.attr().y1,
+          y2: +item.attr().y1 + item.size,
           x2: +item.attr().x1,
           strokeWidth: thiccness !== '' ? thiccness : +item.attr().strokeWidth
         })
-        item.size = size //save the new size if not null
       }
       $('#modal').remove() // closes the modal
     })
@@ -619,11 +628,11 @@ var windowScroll = function() {
 
     if ( scrlTop > 200) {
       //if scroll is outside of the home area, fix nav bar to the top of the page -- written by Yev
-      console.log("LOWER")
+      // console.log("LOWER")
       header.addClass('navbar-hidden fh5co-animated fadeOutUp');
       header.removeClass('fadeInDown');
     } else{
-      console.log("UPPER")
+      // console.log("UPPER")
       header.addClass('navbar-fixed-top fh5co-animated fadeInDown')
       header.removeClass('navbar-hidden fadeOutUp');
     }
